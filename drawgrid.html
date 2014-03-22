@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+	<body>
+	<canvas id="mycanvas" width="500" height="375"> </canvas>
+
+	<script type="text/javascript">
+	canvas = document.getElementById("mycanvas");
+	canvasctx =canvas.getContext('2d');
+
+
+canvasctx.beginPath();
+	for (var x = 0.5; x < 500; x += 10) {
+	  canvasctx.moveTo(x, 0);
+	  canvasctx.lineTo(x, 375);
+	}
+
+	// Draw vertical lines
+
+	for (var y = 0.5; y < 375; y += 10) {
+	  canvasctx.moveTo(0, y);
+	  canvasctx.lineTo(500, y);
+	}
+		canvasctx.strokeStyle = "#eee";
+	canvasctx.stroke();	
+canvasctx.closePath();
+
+
+var context = canvasctx;
+
+context.beginPath();
+context.moveTo(0, 40);
+context.lineTo(240, 40);
+context.moveTo(260, 40);
+context.lineTo(500, 40);
+context.moveTo(495, 35);
+context.lineTo(500, 40);
+context.lineTo(495, 45);
+
+
+canvasctx.moveTo(60, 0);
+canvasctx.lineTo(60, 153);
+canvasctx.moveTo(60, 173);
+canvasctx.lineTo(60, 375);
+canvasctx.moveTo(65, 370);
+canvasctx.lineTo(60, 375);
+canvasctx.lineTo(55, 370);
+
+
+canvasctx.strokeStyle = "#000";
+canvasctx.stroke();
+
+canvasctx.font = "bold 12px sans-serif";
+canvasctx.fillText("x", 248, 43);
+canvasctx.fillText("y", 58, 165);
+
+canvasctx.textBaseline = "top";
+canvasctx.fillText("( 0 , 0 )", 8, 5);
+
+canvasctx.textAlign = "right";
+canvasctx.textBaseline = "bottom";
+canvasctx.fillText("( 500 , 375 )", 492, 370);
+canvasctx.closePath();
+	</script>
+	</body>
+</html>
