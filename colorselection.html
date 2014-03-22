@@ -27,6 +27,8 @@ var pathToYourImages = [
 	"john/11.jpg",
 	"john/12.jpg",
 	"john/13.jpg",
+	"john/14.jpg",
+	"john/15.jpg",
 ];
 
 var imgoffsetx = 300;
@@ -60,6 +62,30 @@ var currentImageIdx = 0;
 var currentImageNum = 3;
 
 var testimages = new Array();
+var shufflearray = new Array();
+
+function intrandom(range) {
+	return Math.floor(Math.random()*range)
+}
+
+function shuffleallarray() {
+	var tmp = 0;
+	var randomidx = 0;
+	for (var i=1; i<shufflearray.length; ++i) {
+		randomidx = intrandom(shufflearray.length-i)
+		tmp = shufflearray[shufflearray.length-i];
+		shufflearray[shufflearray.length-i] 
+			= shufflearray[randomidx];
+		shufflearray[randomidx] = tmp;
+	}
+
+	var logstr = "";
+	for (var i=0; i<shufflearray.length; ++i) {
+		logstr += shufflearray[i]+",";
+	}
+
+	console.log(logstr);
+}
 
 function initialize_sceen_data() {
 	var numgridx = Math.floor(canvaswidth/picwidth);
@@ -118,7 +144,8 @@ function mouse_move() {
 	// The following two lines are used together 
 	// to update clear the canvas
 	canvas.width = canvas.width;
-	DebugShowAllImages();
+	// DebugShowAllImages();
+	DebugShowAllRandomImages();
 	// ShowGrids();
 
 	convert_raw_coord(draw_pic_border);
@@ -135,7 +162,7 @@ window.onload = function() {
 	canvas.addEventListener("mousemove", function(event){
 		g_currmpx = event.clientX;
 		g_currmpy = event.clientY;
-		console.log(g_currmpx+','+g_currmpy);
+		// console.log(g_currmpx+','+g_currmpy);
 		mouse_move();
 	});
 	
@@ -143,8 +170,16 @@ window.onload = function() {
 	// PreloadReloadResources();
 	PreloadResources();
 	
+	// 
+	shuffleallarray();
+
+	PaintBackGroundAsBlack();
+
+	// 
+	DebugShowAllRandomImages();
+
 	// debug show all the testing pictures;
-	DebugShowAllImages();
+	// DebugShowAllImages();
 	
 	// ImageSliding();
 };
@@ -169,15 +204,20 @@ function PreloadResources() {
 		testimages[i] = new Image();
 		testimages[i].src = pathToYourImages[i];
 	}
+
+	for ( var i=0; i<pathToYourImages.length; ++i) {
+		shufflearray[i] = i;
+	}
 }
 
-function DebugShowAllImages() {
-
+function PaintBackGroundAsBlack() {
 	console.log("Black!");
 
 	contextForCanvas.fillStyle = "black";
 	contextForCanvas.fillRect(0,0,canvas.width,canvas.height);
+}
 
+function DebugShowAllImages() {
 	var colnum = 2;
 	var rownum = 3;
 	var xid;
@@ -186,6 +226,20 @@ function DebugShowAllImages() {
 		xid = imgidx%rownum;
 		yid = Math.floor(imgidx/rownum);
 		DebugShowImageAtGrid( xid, yid, testimages[imgidx] );
+	}
+}
+
+function DebugShowAllRandomImages() {
+
+	PaintBackGroundAsBlack();
+
+	var rownum = 3;
+	var xid;
+	var yid;
+	for (var sidx=0; sidx<shufflearray.length; ++sidx) {
+		xid = sidx%rownum;
+		yid = Math.floor(sidx/rownum);
+		DebugShowImageAtGrid( xid, yid, testimages[shufflearray[sidx]]);
 	}
 }
 
@@ -198,7 +252,7 @@ function DebugShowImageAtGrid( xid, yid, image ) {
 	// contextForCanvas.clearRect();
 	contextForCanvas.drawImage(image, imgoffsetx+xid*width, imgoffsety+yid*height, width, height);
 	
-	console.log(xid*width+'\t,'+yid*height);
+	// console.log(xid*width+'\t,'+yid*height);
 	
 }
 
