@@ -31,6 +31,8 @@ var pathToYourImages = [
 	"john/15.jpg",
 ];
 
+var theendImgpath = "john/theend.jpg"
+
 var imgoffsetx = 300;
 var imgoffsety = 100;
 var picwidth = 85;
@@ -63,6 +65,56 @@ var currentImageNum = 3;
 
 var testimages = new Array();
 var shufflearray = new Array();
+var theendimg = null;
+
+var framinterval = 1000;
+var loopcounter = 0;
+
+
+var animationframe = [
+	frame_firstgroupimg,
+	frame_secondgroupimg,
+	frame_thirdgroupimg,
+	// frame_theendimg
+];
+
+function loopframe() {
+	
+	if (loopcounter<animationframe.length)
+		animationframe[loopcounter]();
+	else
+		frame_theendimg();
+
+	loopcounter++;
+}
+
+function simple_draw_3_pics(shuffid0, shuffid1, shuffid2) {
+	DebugShowImageAtGrid(1,0,testimages[shufflearray[shuffid0]]);
+	DebugShowImageAtGrid(2,0,testimages[shufflearray[shuffid1]]);
+	DebugShowImageAtGrid(3,0,testimages[shufflearray[shuffid2]]);
+}
+
+function frame_firstgroupimg() {
+	PaintBackGroundAsBlack();
+	simple_draw_3_pics(0,1,2);
+
+}
+
+function frame_secondgroupimg() {
+	PaintBackGroundAsBlack()
+	simple_draw_3_pics(3,4,5);
+}
+
+function frame_thirdgroupimg() {
+	PaintBackGroundAsBlack();
+	simple_draw_3_pics(5,6,7);
+}
+
+function frame_theendimg() {
+	PaintBackGroundAsBlack();
+	// DebugShowImageAtGrid(3,3,theendimg);
+	contextForCanvas.drawImage(theendimg,200,150);
+}
 
 function intrandom(range) {
 	return Math.floor(Math.random()*range)
@@ -153,37 +205,6 @@ function mouse_move() {
 	swap_pre_curr_grid();
 }
 
-window.onload = function() {
-	canvas = document.getElementById("theCanvas");
-	contextForCanvas = canvas.getContext('2d');
-	image = document.createElement("img");
-	
-
-	canvas.addEventListener("mousemove", function(event){
-		g_currmpx = event.clientX;
-		g_currmpy = event.clientY;
-		// console.log(g_currmpx+','+g_currmpy);
-		mouse_move();
-	});
-	
-	// preload the resources
-	// PreloadReloadResources();
-	PreloadResources();
-	
-	// 
-	shuffleallarray();
-
-	PaintBackGroundAsBlack();
-
-	// 
-	DebugShowAllRandomImages();
-
-	// debug show all the testing pictures;
-	// DebugShowAllImages();
-	
-	// ImageSliding();
-};
-
 function ShowGrids() {
 	for (var rowidx=0; rowidx<numgridx; ++rowidx) {
 		for (var colidx=0; colidx<numgridy; ++colidx) {
@@ -208,6 +229,9 @@ function PreloadResources() {
 	for ( var i=0; i<pathToYourImages.length; ++i) {
 		shufflearray[i] = i;
 	}
+
+	theendimg = new Image();
+	theendimg.src = theendImgpath;
 }
 
 function PaintBackGroundAsBlack() {
@@ -288,6 +312,39 @@ function goFullScreen(){
     // canvas.width = window.innerWidth;
     // canvas.height = window.innerHeight;
 }
+
+window.onload = function() {
+	canvas = document.getElementById("theCanvas");
+	contextForCanvas = canvas.getContext('2d');
+	image = document.createElement("img");
+	
+
+	// canvas.addEventListener("mousemove", function(event){
+	// 	g_currmpx = event.clientX;
+	// 	g_currmpy = event.clientY;
+	// 	// console.log(g_currmpx+','+g_currmpy);
+	// 	mouse_move();
+	// });
+	
+	// preload the resources
+	// PreloadReloadResources();
+	PreloadResources();
+	
+	// 
+	shuffleallarray();
+
+	PaintBackGroundAsBlack();
+
+	// // 
+	// DebugShowAllRandomImages();
+
+	// // debug show all the testing pictures;
+	// // DebugShowAllImages();
+	
+	// // ImageSliding();
+
+	setInterval(loopframe,1000);
+};
 
 </script>
 </body>
