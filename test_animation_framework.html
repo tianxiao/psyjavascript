@@ -186,37 +186,11 @@ function update_grid_xy() {
 	g_currgy = Math.floor((g_currmpy-imgoffsety)/picheight);
 }
 
-function mouse_move() {
-
-	update_grid_xy();
-
-	if (g_pregx==g_currgx&&g_pregy==g_currgy)
-		return;
-
-	// The following two lines are used together 
-	// to update clear the canvas
-	canvas.width = canvas.width;
-	// DebugShowAllImages();
-	DebugShowAllRandomImages();
-	// ShowGrids();
-
-	convert_raw_coord(draw_pic_border);
-
-	swap_pre_curr_grid();
-}
-
 function ShowGrids() {
 	for (var rowidx=0; rowidx<numgridx; ++rowidx) {
 		for (var colidx=0; colidx<numgridy; ++colidx) {
 			convert_raw_coord_from_grid(rowidx,colidx,draw_pic_border_black);
 		}
-	}
-}
-
-function PreloadReloadResources() {
-	for ( var i=0; i<pathToYourImages.length; ++i ) {
-		testimages[i] = document.createElement("img");
-		testimages[i].setAttribute('src',pathToYourImages[i]);
 	}
 }
 
@@ -241,32 +215,6 @@ function PaintBackGroundAsBlack() {
 	contextForCanvas.fillRect(0,0,canvas.width,canvas.height);
 }
 
-function DebugShowAllImages() {
-	var colnum = 2;
-	var rownum = 3;
-	var xid;
-	var yid;
-	for ( var imgidx=0; imgidx<testimages.length; ++imgidx ) {
-		xid = imgidx%rownum;
-		yid = Math.floor(imgidx/rownum);
-		DebugShowImageAtGrid( xid, yid, testimages[imgidx] );
-	}
-}
-
-function DebugShowAllRandomImages() {
-
-	PaintBackGroundAsBlack();
-
-	var rownum = 3;
-	var xid;
-	var yid;
-	for (var sidx=0; sidx<shufflearray.length; ++sidx) {
-		xid = sidx%rownum;
-		yid = Math.floor(sidx/rownum);
-		DebugShowImageAtGrid( xid, yid, testimages[shufflearray[sidx]]);
-	}
-}
-
 function DebugShowImageAtGrid( xid, yid, image ) {
 	var width = picwidth;
 	var height = picheight;
@@ -278,26 +226,6 @@ function DebugShowImageAtGrid( xid, yid, image ) {
 	
 	// console.log(xid*width+'\t,'+yid*height);
 	
-}
-
-function ImageSliding() {
-	image.setAttribute('src', pathToYourImages[currentImageIdx]);
-	
-	currentImageIdx = currentImageIdx === (currentImageIdx.path-1)?0:++currentImageIdx;
-	
-	contextForCanvas.globalAlpha = 0.1;
-	
-	setTimeout(ShowImage, 200);
-}
-
-function ShowImage() {
-	contextForCanvas.save();
-	
-	contextForCanvas.clearRect(0,0,canvas.width, canvas.height);
-	contextForCanvas.drawImage(image, 0, 0, 300, 150);
-	contextForCanvas.globalAlpha += 0.1;
-	
-	contextForCanvas.globalAlpha>0.9 ? setTimeout(ImageSliding, 1000):setTimeout(ShowImage, 200);
 }
 
 function goFullScreen(){
@@ -316,32 +244,12 @@ function goFullScreen(){
 window.onload = function() {
 	canvas = document.getElementById("theCanvas");
 	contextForCanvas = canvas.getContext('2d');
-	image = document.createElement("img");
 	
-
-	// canvas.addEventListener("mousemove", function(event){
-	// 	g_currmpx = event.clientX;
-	// 	g_currmpy = event.clientY;
-	// 	// console.log(g_currmpx+','+g_currmpy);
-	// 	mouse_move();
-	// });
-	
-	// preload the resources
-	// PreloadReloadResources();
 	PreloadResources();
 	
-	// 
 	shuffleallarray();
 
 	PaintBackGroundAsBlack();
-
-	// // 
-	// DebugShowAllRandomImages();
-
-	// // debug show all the testing pictures;
-	// // DebugShowAllImages();
-	
-	// // ImageSliding();
 
 	setInterval(loopframe,1000);
 };

@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html>
+<title>
+John Show
+</title>
+<script>
+<!--
+
+-->
+</script>
+<body>
+<p><button onClick="goFullScreen();">Go FullScreen</button></p>
+<canvas id="theCanvas" width="1920" height="1080"/>
+
+<script>
+var pathToYourImages = [
+	"john/1.jpg",
+	"john/2.jpg",
+	"john/3.jpg",
+	"john/4.jpg",
+	"john/5.jpg",
+	"john/6.jpg",
+	"john/7.jpg",
+	"john/8.jpg",
+	"john/9.jpg",
+	"john/10.jpg",
+	"john/11.jpg",
+	"john/12.jpg",
+	"john/13.jpg",
+	"john/14.jpg",
+	"john/15.jpg",
+];
+
+var theendImgpath = "john/theend.jpg"
+
+var imgoffsetx = 300;
+var imgoffsety = 100;
+var picwidth = 85;
+var picheight = 100;
+
+var g_prempx = 0;
+var g_prempy = 0;
+var g_pregx = 0;
+var g_pregy = 0;
+
+var g_currmpx = 0;
+var g_currmpy = 0
+var g_currgx = 0;
+var g_currgy = 0;
+
+var g_mouseclick = false;
+
+var canvas = null;
+
+var image = null;
+
+var currentImageIdx = 0;
+
+var currentImageNum = 3;
+
+var testimages = new Array();
+var shufflearray = new Array();
+var theendimg = null;
+
+function PreloadResources() {
+	for ( var i=0; i<pathToYourImages.length; ++i ) {
+		testimages[i] = new Image();
+		testimages[i].src = pathToYourImages[i];
+	}
+
+	for ( var i=0; i<pathToYourImages.length; ++i) {
+		shufflearray[i] = i;
+	}
+
+	theendimg = new Image();
+	theendimg.src = theendImgpath;
+}
+
+function PaintBackGroundAsBlack() {
+	console.log("Black!");
+
+	contextForCanvas.fillStyle = "black";
+	contextForCanvas.fillRect(0,0,canvas.width,canvas.height);
+}
+
+
+function goFullScreen(){
+    var canvas = document.getElementById("theCanvas");
+    if(canvas.requestFullScreen)
+        canvas.requestFullScreen();
+    else if(canvas.webkitRequestFullScreen)
+        canvas.webkitRequestFullScreen();
+    else if(canvas.mozRequestFullScreen)
+        canvas.mozRequestFullScreen();
+
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
+}
+
+function iscollisionf(cx,cy,rx,ry) {
+	if (rx>cx-picwidth&&rx<cx+picwidth&&
+		ry>cy-picheight&&ry<cy+picheight) {
+		return true;
+	}
+
+	return false;
+}
+
+function testrandompositionmap() {
+	setInterval(noncollisionmap,50)
+}
+
+function drawimgatposition(img, x, y) {
+
+}
+
+var numrandompic = 30;
+var randomposition = new Array();
+for (var i=0; i<numrandompic; ++i) {
+	randomposition[i] = {x:0.0,y:0.0};
+}
+
+function noncollisionmap() {
+
+	PaintBackGroundAsBlack();
+	var n = numrandompic;
+	var randomposx = 0.0;
+	var randomposy = 0.0;
+
+	var iterationcounter = 0;
+
+	for (var i=0; i<n; ++i) {
+		var iscollision = false;
+		while (true) {
+			iterationcounter++;
+			if (iterationcounter>10000)
+				return;
+			randomposx = Math.random()*(canvas.width-picwidth-10);
+			randomposy = Math.random()*(canvas.height-picheight-10);
+			for (var ri=0; ri<i; ++ri) {
+				if (iscollisionf(
+					randomposition[ri].x,
+					randomposition[ri].y,
+					randomposx,randomposy)) {
+					iscollision = true;
+					break;
+				}
+			}
+			if (!iscollision) {
+				randomposition[i] = {x:randomposx,y:randomposy};
+				break;
+			}
+		}
+	}
+
+	for (var i=0; i<n; ++i) {
+		contextForCanvas.drawImage(testimages[0],randomposition[i].x,randomposition[i].y,picwidth,picheight);
+	}
+}
+
+window.onload = function() {
+	canvas = document.getElementById("theCanvas");
+	contextForCanvas = canvas.getContext('2d');
+	
+	PreloadResources();
+	
+	console.log('Begin Draw Random Positino Pictures!')
+
+	PaintBackGroundAsBlack();
+
+	testrandompositionmap();
+
+	
+};
+
+</script>
+</body>
+</html>
