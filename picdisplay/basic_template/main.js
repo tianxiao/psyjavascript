@@ -100,6 +100,11 @@ var main_state = {
         // pre setting the psudo random picture position
         this.pospresetting();
 
+        // selection results
+        this.pickresults;
+        this.initialpickresults();
+
+
         // set cross position
         this.crosspos = {};
         this.crosspos.x = bkgwidth/2.0;
@@ -168,6 +173,7 @@ var main_state = {
         // sprite.x = this.hiddenpos.x;
         // sprite.y = this.hiddenpos.y;
         // sprite.reset(this.hiddenpos.x,this.hiddenpos.y);
+        this.pickresults[this.framecounter+3-1] = sprite.id;
     },
 
     pospresetting : function() {
@@ -206,6 +212,14 @@ var main_state = {
         console.log(logstr);
 
     },
+
+    initialpickresults : function() {
+        this.pickresults = [];
+        for (var i=0; i<16; ++i) {
+            this.pickresults.push(-1);
+        }
+    },
+
 
 }
 
