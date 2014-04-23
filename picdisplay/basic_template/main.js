@@ -97,6 +97,8 @@ var main_state = {
             this.grid.slot[i].sprite.y = this.hiddenpos.y;
         }
 
+        // pre setting the psudo random picture position
+        this.pospresetting();
 
         // set cross position
         this.crosspos = {};
@@ -144,18 +146,13 @@ var main_state = {
     },
 
     showframebyId: function() {
-        for (var i=0; i<3; ++i) {
+        for (var i=0; i<3+this.framecounter; ++i ) {
+            var randomposi = this.frameposlist[this.framecounter][i];
             this.grid.slot[i].sprite.reset(
-                this.grid.location[i].x,
-                this.grid.location[i].y);
+            this.grid.location[randomposi].x,
+            this.grid.location[randomposi].y); 
         }
 
-        for (var j=0; j<this.framecounter; ++j) {
-            var picid = 3+j;
-            this.grid.slot[picid].sprite.reset(
-                this.grid.location[picid].x,
-                this.grid.location[picid].y);
-        }
 
         this.framecounter++;
     },
@@ -171,8 +168,49 @@ var main_state = {
         // sprite.x = this.hiddenpos.x;
         // sprite.y = this.hiddenpos.y;
         // sprite.reset(this.hiddenpos.x,this.hiddenpos.y);
-    }
+    },
 
+    pospresetting : function() {
+
+        this.frameposlist = [];
+
+        for (var j=0; j<this.framesmax; ++j ) {
+            this.frameposlist.push([]);
+            for (var i=0; i<16; ++i) {
+                this.frameposlist[j].push(i);
+            }
+        }
+
+        for (var j=0; j<this.framesmax; ++j) {
+            this.shufflearrayrandom(this.frameposlist[j]);
+        }
+    },
+
+    shufflearrayrandom : function(shufflearray) {
+
+        var tmp = 0;
+        var randomidx = 0;
+        for (var i=1; i<shufflearray.length; ++i) {
+            randomidx = intrandom(shufflearray.length-i)
+            tmp = shufflearray[shufflearray.length-i];
+            shufflearray[shufflearray.length-i] 
+                = shufflearray[randomidx];
+            shufflearray[randomidx] = tmp;
+        }
+
+        var logstr = "";
+        for (var i=0; i<shufflearray.length; ++i) {
+            logstr += shufflearray[i]+",";
+        }
+
+        console.log(logstr);
+
+    },
+
+}
+
+function intrandom(range) {
+    return Math.floor(Math.random()*range)
 }
 
 // And finally we tell Phaser to add and start our 'main' state
