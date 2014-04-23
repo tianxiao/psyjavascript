@@ -73,11 +73,24 @@ var main_state = {
 
         for (var i=0; i<16; ++i) {
             this.grid.slot[i].sprite.id = i;
+            this.grid.slot[i].sprite.ishidden = true;
             this.grid.slot[i].sprite.inputEnabled = true;
             this.grid.slot[i].sprite.input.useHandCursor = true;
             this.grid.slot[i].sprite.events.onInputDown.add(this.clickshowid,this);
         }
 
+
+        this.framecounter = 0;
+        this.maxframes = 14; // 16-3+1;
+
+        // initial pic hidden those sprite out of the screen bound
+        this.hiddenpos = {};
+        this.hiddenpos.x = bkgwidth + perwidth;
+        this.hiddenpos.y = bkgheight + perheight;
+        // for (var i=0; i<16; ++i) {
+        //     this.grid.slot[i].sprite.x = this.hiddenpos.x;
+        //     this.grid.slot[i].sprite.y = this.hiddenpos.y;
+        // }
 
 
     },
@@ -90,6 +103,9 @@ var main_state = {
         this.label_score.content = sprite.id;
         console.log(sprite.id);
         // sprite.destroy();
+        // sprite.x = this.hiddenpos.x;
+        // sprite.y = this.hiddenpos.y;
+        sprite.reset(this.hiddenpos.x,this.hiddenpos.y);
     }
 
 }
