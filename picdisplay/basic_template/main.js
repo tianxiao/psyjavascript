@@ -6,6 +6,7 @@ var perheight = 200;
 var headerheight = 50;
 var bkgwidth = perwidth*col;
 var bkgheight = headerheight+perheight*row;
+var transienttime = 1000;
 
 
 // We start by initializing Phaser
@@ -17,14 +18,18 @@ var main_state = {
 
     preload: function() {
         // Everything in this function will be executed at the beginning. That’s where we usually load the game’s assets (images, sounds, etc.)
-    	this.game.stage.backgroundColor = "#71c5cf";
+    	// this.game.stage.backgroundColor = "#71c5cf";
+        this.game.state.backgroundColor = "#000000"
         game.load.image('bird','assets/bird.png')
         game.load.image('pipe','assets/pipe.png')
         game.load.audio('jump','assets/jump.wav')
 
+
         for (var i=1; i<17; ++i) {
             game.load.image('test'+i+'','nb/'+i+'.jpg')
         }
+
+        game.load.image('cross','cross.jpg')
 
     },
                                
@@ -33,7 +38,7 @@ var main_state = {
         this.score = 0;
 
         // var style = {font:"30px Arial", fill:"#ffffff"};
-        var style = {font:"30px Arial", fill:"#000000"};
+        var style = {font:"30px Arial", fill:"#ffffff"};
 
         this.label_score = this.game.add.text(20,20,"0",style);
 
@@ -81,18 +86,78 @@ var main_state = {
 
 
         this.framecounter = 0;
-        this.maxframes = 14; // 16-3+1;
+        this.framesmax = 14; // 16-3+1;
 
         // initial pic hidden those sprite out of the screen bound
         this.hiddenpos = {};
         this.hiddenpos.x = bkgwidth + perwidth;
         this.hiddenpos.y = bkgheight + perheight;
-        // for (var i=0; i<16; ++i) {
-        //     this.grid.slot[i].sprite.x = this.hiddenpos.x;
-        //     this.grid.slot[i].sprite.y = this.hiddenpos.y;
-        // }
+        for (var i=0; i<16; ++i) {
+            this.grid.slot[i].sprite.x = this.hiddenpos.x;
+            this.grid.slot[i].sprite.y = this.hiddenpos.y;
+        }
 
 
+        // set cross position
+        this.crosspos = {};
+        this.crosspos.x = bkgwidth/2.0;
+        this.crosspos.y = bkgheight/2.0;
+        this.cross = game.add.sprite(this.hiddenpos.x,this.hiddenpos.y,'cross');
+        this.cross.anchor.setTo(0.5,0.5);
+
+        timer = game.time.create(false);
+
+        timer.add(transienttime,this.showcross,this);
+        timer.start();
+
+    },
+
+    showcross: function() {
+        this.hideallpic();
+        this.cross.reset(this.crosspos.x,this.crosspos.y);
+        if (this.framecounter<this.framesmax) {
+            timer.add(transienttime,this.showbkg,this);
+        }
+    },
+
+    showbkg : function() {
+        this.cross.reset(this.hiddenpos.x,this.hiddenpos.y);
+        this.hideallpic();
+        if (this.framecounter<this.framesmax) {
+            timer.add(transienttime,this.showframe,this);
+        }
+    },
+
+    hideallpic :function() {
+        for (var i=0; i<16; ++i) {
+            this.grid.slot[i].sprite.reset(
+                this.hiddenpos.x,
+                this.hiddenpos.y);
+        }
+    },
+
+    showframe: function() {
+        this.showframebyId();
+        if (this.framecounter<this.framesmax) {
+            timer.add(transienttime,this.showcross,this);
+        }
+    },
+
+    showframebyId: function() {
+        for (var i=0; i<3; ++i) {
+            this.grid.slot[i].sprite.reset(
+                this.grid.location[i].x,
+                this.grid.location[i].y);
+        }
+
+        for (var j=0; j<this.framecounter; ++j) {
+            var picid = 3+j;
+            this.grid.slot[picid].sprite.reset(
+                this.grid.location[picid].x,
+                this.grid.location[picid].y);
+        }
+
+        this.framecounter++;
     },
 
     update: function() {
@@ -105,7 +170,7 @@ var main_state = {
         // sprite.destroy();
         // sprite.x = this.hiddenpos.x;
         // sprite.y = this.hiddenpos.y;
-        sprite.reset(this.hiddenpos.x,this.hiddenpos.y);
+        // sprite.reset(this.hiddenpos.x,this.hiddenpos.y);
     }
 
 }
